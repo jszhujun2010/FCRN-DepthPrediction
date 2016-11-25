@@ -2474,6 +2474,16 @@ layer {
 }
 
 layer {
+	name: "drop"
+	type: "Dropout"
+	bottom: "upc4"
+	top: "upc4"
+	dropout_param {
+		dropout_ratio: 0.5
+	}
+}
+
+layer {
         bottom: "upc4"
         top: "upc4"
         name: "upc4_relu"

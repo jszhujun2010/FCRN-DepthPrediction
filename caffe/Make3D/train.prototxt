@@ -5,7 +5,7 @@ layer {
     type: "Data"
     top: "train_data"
     data_param {
-        source: "/data1/zhujun_data/framework/caffe_copy/caffe_20150410/examples/depth/src/leveldb_data_2"
+        source: "/data1/zhujun_data/framework/caffe_copy/caffe_20150410/examples/depth/depthExperiment/src4/leveldb_data_2"
         batch_size: 2
 	backend: LEVELDB
     }
@@ -16,7 +16,7 @@ layer {
     type: "Data"
     top: "train_label"
     data_param {
-        source: "/data1/zhujun_data/framework/caffe_copy/caffe_20150410/examples/depth/src/leveldb_label_2"
+        source: "/data1/zhujun_data/framework/caffe_copy/caffe_20150410/examples/depth/depthExperiment/src4/leveldb_label_2"
         batch_size: 2
         backend: LEVELDB
     }
@@ -2309,13 +2309,24 @@ layer {
 		kernel_size: 1
 		pad: 0
 		stride: 1
-		bias_term: false
-		weight_filler {
+		 weight_filler {
                         type: "xavier"
                 }
+		bias_filler {
+      			type: "constant"
+    		}
 	}	
 }
 
+layer {
+	bottom: "res6"
+	top: "res6"
+	name: "bn6"
+	type: "BatchNorm"
+	batch_norm_param {
+		use_global_stats: false
+	}
+}
 
 layer {
 	bottom: "res6"
@@ -2323,8 +2334,8 @@ layer {
 	name: "upc1"
 	type: "Unpooling"
 	unpooling_param {
-	       unpool_h: 12 
-	       unpool_w: 16
+	       unpool_h: 16 
+	       unpool_w: 12
                kernel_size: 2
                stride: 2
 	       unpool: MAX
@@ -2341,10 +2352,10 @@ layer {
                 kernel_size: 5
                 pad: 2
                 stride: 1
-                bias_term: false
 		weight_filler {
 		        type: "xavier"
 		}
+		bias_term: false
         }
 }
 
@@ -2355,15 +2366,14 @@ layer {
         type: "ReLU"
 }
 
-
 layer {
 	bottom: "upc1"
 	top: "upc2"
 	name: "upc2"
 	type: "Unpooling"
         unpooling_param {
-	       unpool_h: 24
-               unpool_w: 32
+	       unpool_h: 32
+               unpool_w: 24
                kernel_size: 2
                stride: 2
                unpool: MAX
@@ -2380,10 +2390,10 @@ layer {
                 kernel_size: 5
                 pad: 2
                 stride: 1
-                bias_term: false
 		weight_filler {
 		        type: "xavier"
 		}
+		bias_term: false
         }
 }
 
@@ -2394,14 +2404,15 @@ layer {
         type: "ReLU"
 }
 
+
 layer {
 	bottom: "upc2"
 	top: "upc3"
 	name: "upc3"
 	type: "Unpooling"
         unpooling_param {
-	       unpool_h: 48
-               unpool_w: 64
+	       unpool_h: 64
+               unpool_w: 48
                kernel_size: 2
                stride: 2
                unpool: MAX
@@ -2418,10 +2429,10 @@ layer {
                 kernel_size: 5
                 pad: 2
                 stride: 1
-                bias_term: false
 		weight_filler {
 		        type: "xavier"
 		}
+		bias_term: false
         }
 }
 
@@ -2439,8 +2450,8 @@ layer {
 	name: "upc4"
 	type: "Unpooling"
         unpooling_param {
-	       unpool_h: 96
-               unpool_w: 128
+	       unpool_h: 128
+               unpool_w: 96
                kernel_size: 2
                stride: 2
                unpool: MAX
@@ -2457,11 +2468,21 @@ layer {
                 kernel_size: 5
                 pad: 2
                 stride: 1
-                bias_term: false
 		weight_filler {
 		        type: "xavier"
 		}
+		bias_term: false
         }
+}
+
+layer {
+	bottom: "upc4"
+	top: "upc4"
+	name: "drop"
+	type: "Dropout"
+	dropout_param {
+    		dropout_ratio: 0.5
+  	}
 }
 
 layer {
@@ -2471,46 +2492,9 @@ layer {
         type: "ReLU"
 }
 
+
 layer {
 	bottom: "upc4"
-	top: "upc5"
-	name: "upc5"
-	type: "Unpooling"
-        unpooling_param {
-	       unpool_h: 192
-               unpool_w: 256
-               kernel_size: 2
-               stride: 2
-               unpool: MAX
-        }
-}
-
-layer {
-	bottom: "upc5"
-	top: "upc5"
-	name: "upc5_conv"
-	type: "Convolution"
-        convolution_param { 
-                num_output: 32
-                kernel_size: 5
-                pad: 2
-                stride: 1
-                bias_term: false
-		weight_filler {
-		        type: "xavier"
-		}
-        }
-}
-
-layer {
-        bottom: "upc5"
-        top: "upc5"
-        name: "upc5_relu"
-        type: "ReLU"
-}
-
-layer {
-	bottom: "upc5"
 	top: "last_conv"
 	name: "last_conv"
 	type: "Convolution"
@@ -2519,10 +2503,10 @@ layer {
                 kernel_size: 3
                 pad: 1
                 stride: 1
-                bias_term: false
 		weight_filler {
 		        type: "xavier"
 		}
+		bias_term: false
         }
 }
 
@@ -2534,22 +2518,9 @@ layer {
 }
 
 layer {
-	bottom: "last_conv"
-	bottom: "train_data"
-	top: "score"
-	name: "score"
-	type: "Crop"
-	crop_param {
-		axis: 2
-		offset: 19
-	}
-}
-
-
-layer {
   	name: "loss"
   	type: "EuclideanLoss"
-  	bottom: "score"
+  	bottom: "last_conv"
   	bottom: "train_label"
   	top: "loss"
 }

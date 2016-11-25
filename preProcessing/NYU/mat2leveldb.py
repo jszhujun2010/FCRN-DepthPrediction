@@ -68,7 +68,7 @@ for i in range(0, train_image.shape[0]):
 	ti = train_image[i,:,:,:]
 	ti = ti.transpose((1,2,0))
 	ti = tf.rescale(ti, 0.5, order=0)
-	ti = ti[8:312,7:235,:]
+	ti = ti[8:312,7:235,::-1]
 	ti = ti.transpose((2,0,1))
 
 	te = train_value[i,:,:]
@@ -112,7 +112,7 @@ for i in range(0, test_image.shape[0]):
 	ti = test_image[i,:,:,:]
 	ti = ti.transpose((1,2,0))
 	ti = tf.rescale(ti, 0.5, order=0)
-	ti = ti[8:312,7:235,:]
+	ti = ti[8:312,7:235,::-1]
 	ti = ti.transpose((2,0,1))
 
 	te = test_value[i,:,:]

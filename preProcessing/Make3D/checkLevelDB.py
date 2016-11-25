@@ -25,5 +25,7 @@ for key, value in db.RangeIter():
 		print image.shape
 		if image.shape[2] == 1:
 			image = image[:,:,0]
+		else:
+			image = image[:,:,::-1]
 		io.imsave(out_image, image)
 		break

@@ -12,6 +12,7 @@ from os import walk
 
 def processData(path):
 	data = io.imread(path)/255.0
+	data = data[:,:,::-1]
 	standard = (172, 230, 3)
 	#print data.shape
 	if data.shape != standard:

@@ -1,0 +1,12 @@
+train_net: "train.prototxt"
+display: 5
+lr_policy: "step"
+gamma: 0.9
+stepsize: 1000
+base_lr: 0.0000001
+momentum: 0.9
+max_iter: 200000
+weight_decay: 0.0005
+snapshot: 5000
+snapshot_prefix: "train-"
+solver_mode: GPU

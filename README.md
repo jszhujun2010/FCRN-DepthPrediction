@@ -13,7 +13,12 @@ By [Iro Laina](http://campar.in.tum.de/Main/IroLaina), [Christian Rupprecht](htt
 
 
 ## Introduction
+This is a caffe implementation of FCRN, but not finished yet....
+Added some data preprocessing code, and caffe prototxt.
 
+====================================================================================================================================================================================
+									Original ReadMe.txt Below
+====================================================================================================================================================================================
 This repository contains the CNN models trained for depth prediction from a single RGB image, as described in the paper "[Deeper Depth Prediction with Fully Convolutional Residual Networks](https://arxiv.org/abs/1606.00373)". The provided models are those that were used to obtain the results reported on the paper relatively to the benchmark datasets NYU Depth v2 and Make3D for indoor and outdoor scenes respectively. Moreover, the provided code can be used for inference on arbitrary images. 
 
 
